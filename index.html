@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สติ๊กเกอร์วันหมดอายุน้ำยา &bull; PeriPage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* Typography & base styling for high readability on mobile, iPad, and desktop */
+    body {
+      font-family: 'Noto Sans Thai', 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f3f5f8;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Sticker card styling inspired by reference label */
+    .sticker-outer {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sticker-inner-box {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    /* Floating dropdown shadow for unit menu */
+    .unit-dropdown-menu {
+      box-shadow: 0 14px 32px -6px rgba(15, 23, 42, 0.18), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Reliable touch tapping on iPad/iOS/touchscreens */
+    .touch-pill {
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      position: relative;
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    /* Print styling: isolate sticker cleanly when printing */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #sticker-print-region,
+      #sticker-print-region * {
+        visibility: visible !important;
+      }
+      #sticker-print-region {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 12px !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- 1. Top Navigation Header -->
+  <header class="bg-white border-b border-slate-200/90 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <!-- Flask / Reagent App Icon -->
+        <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M10 3v6.5L5.2 17.6A1.5 1.5 0 006.5 20h11a1.5 1.5 0 001.3-2.4L14 9.5V3M7.5 15h9" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
+            สติ๊กเกอร์วันหมดอายุน้ำยา
+          </h1>
+          <p class="text-xs sm:text-[13px] font-medium text-slate-500">
+            ตัวใหญ่พิเศษ อ่านง่าย &bull; พร้อมพิมพ์ PeriPage
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="open-guide-btn"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 border border-slate-200/90 transition cursor-pointer"
+        >
+          วิธีใช้ &amp; iPad
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Notification Container (replaces alert/confirm) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- 2. Section 1: กรอกข้อมูลน้ำยา (Left Column) -->
+    <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-sm font-extrabold">1</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-slate-900">
+            กรอกข้อมูลน้ำยา
+          </h2>
+        </div>
+        <button
+          id="reset-form-btn"
+          type="button"
+          class="text-xs font-bold text-slate-500 hover:text-slate-800 px-2.5 py-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+        >
+          รีเซ็ตค่า
+        </button>
+      </div>
+
+      <!-- Reagent Name + Standard Solution Pills + Manage Modal Button -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <label for="solution-custom-input" class="block text-sm sm:text-base font-extrabold text-slate-800">
+            ชื่อน้ำยา (Reagent Name)
+          </label>
+          <button
+            type="button"
+            id="open-standard-reagents-btn"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition cursor-pointer shrink-0"
+          >
+            <span>&#9881;</span>
+            เพิ่ม/แก้ไขรายการน้ำยา
+          </button>
+        </div>
+
+        <div class="text-xs font-semibold text-slate-500">
+          เลือกน้ำยามาตรฐาน (ล็อคอายุอัตโนมัติ)
+        </div>
+
+        <div id="standard-reagent-pills" class="flex flex-wrap gap-2"></div>
+
+        <input
+          id="solution-custom-input"
+          type="text"
+          placeholder="หรือพิมพ์ชื่อน้ำยาเอง เช่น 70% Alcohol, NSS, Betadine..."
+          class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm sm:text-base font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+      </div>
+
+      <!-- Staff Name ("ผู้เปิดใช้ (by ...)") + Quick Pills + Manage Modal Button -->
+      <div class="space-y-2 pt-1">
+        <div class="flex items-center justify-between gap-2">
+          <label for="staff-custom-input" class="block text-sm sm:text-base font-extrabold text-slate-800">
+            ผู้เปิดใช้ (by ...)
+          </label>
+          <button
+            type="button"
+            id="quick-manage-staff-btn"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer shrink-0"
+          >
+            + เพิ่ม/ลบชื่อเจ้าหน้าที่
+          </button>
+        </div>
+
+        <div id="staff-pills" class="flex flex-wrap gap-2"></div>
+
+        <input
+          id="staff-custom-input"
+          type="text"
+          placeholder="เลือกด้านบน หรือพิมพ์ชื่อผู้เปิด..."
+          class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm sm:text-base font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+      </div>
+
+      <!-- Open Date ("วันเปิดใช้ (OPEN)") + Thai Buddhist Date Preview + "ใช้วันนี้" -->
+      <div class="space-y-2 pt-1">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <label for="open-date-input" class="block text-sm sm:text-base font-extrabold text-slate-800">
+            วันเปิดใช้ (OPEN)
+          </label>
+          <div class="flex items-center gap-2">
+            <span id="thai-open-date-preview" class="text-xs sm:text-sm font-bold text-slate-600">
+              25 พ.ย. 2569
+            </span>
+            <button
+              type="button"
+              id="use-today-btn"
+              class="px-3 py-1 rounded-lg text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition cursor-pointer"
+            >
+              ใช้วันนี้
+            </button>
+          </div>
+        </div>
+
+        <input
+          id="open-date-input"
+          type="date"
+          class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm sm:text-base font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        />
+      </div>
+
+      <!-- Shelf Life ("อายุการใช้งาน / วันหมดอายุ") Presets + Custom Number & Unit -->
+      <div class="space-y-2.5 pt-1">
+        <div class="flex items-center justify-between gap-2">
+          <label for="duration-value-input" class="block text-sm sm:text-base font-extrabold text-slate-800">
+            อายุการใช้งาน / วันหมดอายุ
+          </label>
+          <span id="locked-duration-badge" class="hidden text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+            &#128274; ล็อคตามน้ำยามาตรฐาน
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button
+            type="button"
+            data-duration-preset="7|days"
+            class="duration-preset-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer"
+          >
+            7 วัน
+          </button>
+          <button
+            type="button"
+            data-duration-preset="3|months"
+            class="duration-preset-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer"
+          >
+            3 เดือน
+          </button>
+          <button
+            type="button"
+            data-duration-preset="6|months"
+            class="duration-preset-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer"
+          >
+            6 เดือน
+          </button>
+          <button
+            type="button"
+            data-duration-preset="1|years"
+            class="duration-preset-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer"
+          >
+            1 ปี
+          </button>
+          <button
+            type="button"
+            data-duration-preset="30|months"
+            class="duration-preset-btn col-span-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer"
+          >
+            30 เดือน (2.5 ปี)
+          </button>
+        </div>
+
+        <div class="bg-slate-50/90 rounded-2xl p-3 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center gap-2.5">
+          <span class="text-xs sm:text-sm font-bold text-slate-600 shrink-0">กำหนดเอง:</span>
+          <input
+            id="duration-value-input"
+            type="number"
+            min="1"
+            max="1200"
+            value="30"
+            class="w-full sm:w-28 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm sm:text-base font-extrabold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <select
+            id="duration-unit-select"
+            aria-label="หน่วยอายุการใช้งาน"
+            class="flex-1 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm sm:text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+          >
+            <option value="days">วัน (Days)</option>
+            <option value="months">เดือน (Months)</option>
+            <option value="years">ปี (Years)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Calculated Expiry Summary Strip -->
+      <div id="calc-summary-strip" class="rounded-2xl p-4 border flex flex-wrap items-center justify-between gap-3 transition-colors">
+        <div class="flex items-center gap-3">
+          <span id="summary-color-dot" class="w-5 h-5 rounded-full border border-black/15 shrink-0"></span>
+          <div>
+            <div class="text-xs font-semibold text-slate-600">วันหมดอายุที่คำนวณได้</div>
+            <div id="summary-expiry-full" class="text-base sm:text-lg font-extrabold text-slate-900">&mdash;</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span id="summary-day-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold shadow-2xs">
+            &mdash;
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Section 2: ตัวอย่างสติ๊กเกอร์ & พิมพ์ PeriPage (Right Column) -->
+    <section class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 sm:p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-700 text-sm font-extrabold">2</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-slate-900">
+            ตัวอย่างสติ๊กเกอร์ &amp; พิมพ์ PeriPage
+          </h2>
+        </div>
+      </div>
+
+      <!-- Label Size / Format Selector -->
+      <div class="space-y-1.5">
+        <label for="sticker-format-select" class="block text-xs font-bold text-slate-600">
+          ขนาดกระดาษสติ๊กเกอร์ PeriPage
+        </label>
+        <select
+          id="sticker-format-select"
+          class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+        >
+          <option value="50x30">50 &times; 30 mm (แนวนอนมาตรฐาน PeriPage)</option>
+          <option value="40x30">40 &times; 30 mm (สติ๊กเกอร์ขนาดกะทัดรัด)</option>
+          <option value="57x30">57 &times; 30 mm (หน้ากว้างพิเศษ)</option>
+        </select>
+      </div>
+
+      <!-- Live Sticker Preview Card -->
+      <div id="sticker-print-region" class="bg-slate-100/80 rounded-2xl p-4 sm:p-5 border border-slate-200/70 flex flex-col items-center justify-center">
+        <div id="sticker-card" class="sticker-outer w-full max-w-[380px] p-3.5 space-y-3">
+          <!-- Colored Expiry Header Banner -->
+          <div
+            id="sticker-banner"
+            class="rounded-xl px-4 py-2.5 flex items-center justify-between gap-2 font-extrabold text-white shadow-2xs transition-colors"
+            style="background-color: #2563eb;"
+          >
+            <div class="flex items-center gap-2 text-base sm:text-lg tracking-tight">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/20 text-sm font-black">&#9888;</span>
+              <span>วันหมดอายุ</span>
+            </div>
+            <div id="sticker-weekday" class="text-base sm:text-lg font-extrabold">
+              วันศุกร์
+            </div>
+          </div>
+
+          <!-- Row: Solution Name (left) + Small Staff Badge on same row (right) -->
+          <div class="px-1 pt-0.5 flex items-baseline justify-between gap-2">
+            <div
+              id="sticker-solution-name"
+              class="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug break-words min-w-0 flex-1"
+            >
+              Betadine Solution
+            </div>
+            <span
+              id="sticker-staff-badge"
+              class="text-[11px] sm:text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200/90 px-2 py-0.5 rounded-lg shrink-0 max-w-[44%] truncate"
+            >
+              ผู้เปิด: พว. วิภา
+            </span>
+          </div>
+
+          <!-- Dates Box: เปิด & หมดอายุ -->
+          <div class="sticker-inner-box px-3.5 py-2.5 divide-y divide-slate-200">
+            <div class="pb-2 flex items-baseline justify-between gap-3">
+              <span class="text-sm sm:text-base font-extrabold text-slate-800 shrink-0">เปิด:</span>
+              <span id="sticker-open-date" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight text-right">
+                25 พ.ย. 69
+              </span>
+            </div>
+            <div class="pt-2 flex items-baseline justify-between gap-3">
+              <span class="text-sm sm:text-base font-extrabold text-slate-900 shrink-0">หมดอายุ:</span>
+              <span id="sticker-expiry-date" class="text-2xl sm:text-[28px] font-extrabold text-blue-700 tracking-tight text-right leading-none">
+                25 ธ.ค. 69
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons: Download PNG & Print -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+        <button
+          id="download-png-btn"
+          type="button"
+          class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-extrabold shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+          </svg>
+          <span>บันทึกรูป PNG (PeriPage)</span>
+        </button>
+
+        <button
+          id="print-sticker-btn"
+          type="button"
+          class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white text-sm font-extrabold shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+          </svg>
+          <span>พิมพ์สติ๊กเกอร์</span>
+        </button>
+      </div>
+
+      <!-- Color Coding Reference Legend -->
+      <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200/80">
+        <div class="text-xs font-extrabold text-slate-700 mb-2">สีประจำวันหมดอายุ (อ้างอิงตามวันในสัปดาห์)</div>
+        <div class="flex flex-wrap gap-1.5 text-[11px] font-bold">
+          <span class="px-2 py-0.5 rounded-md bg-yellow-300 text-slate-900 border border-yellow-400">จันทร์: เหลือง</span>
+          <span class="px-2 py-0.5 rounded-md bg-pink-500 text-white">อังคาร: ชมพู</span>
+          <span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white">พุธ: เขียว</span>
+          <span class="px-2 py-0.5 rounded-md bg-orange-500 text-white">พฤหัสฯ: ส้ม</span>
+          <span class="px-2 py-0.5 rounded-md bg-blue-600 text-white">ศุกร์: ฟ้า/น้ำเงิน</span>
+          <span class="px-2 py-0.5 rounded-md bg-purple-600 text-white">เสาร์: ม่วง</span>
+          <span class="px-2 py-0.5 rounded-md bg-red-600 text-white">อาทิตย์: แดง</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal 1: Manage Standard Solutions & Staff -->
+  <div id="manage-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/45 backdrop-blur-[2px] p-3 sm:p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden relative">
+      <div class="px-5 sm:px-6 pt-5 pb-3.5 flex items-start justify-between gap-3">
+        <div>
+          <h3 id="manage-modal-title" class="text-lg sm:text-xl font-extrabold text-slate-900">
+            จัดการรายการน้ำยามาตรฐาน
+          </h3>
+          <p id="manage-modal-subtitle" class="text-xs sm:text-[13px] font-medium text-slate-500 mt-0.5">
+            เพิ่มน้ำยาพร้อมกำหนดอายุ (วัน / เดือน / ปี) เพื่อล็อคการคำนวณอัตโนมัติ
+          </p>
+        </div>
+        <button
+          id="close-manage-btn"
+          type="button"
+          aria-label="ปิดหน้าต่าง"
+          class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold transition cursor-pointer shrink-0"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Mode Switch Tabs -->
+      <div class="px-5 sm:px-6 border-b border-slate-100 flex gap-2">
+        <button
+          id="tab-solutions-btn"
+          type="button"
+          class="px-3.5 py-2 text-xs sm:text-sm font-extrabold border-b-2 border-emerald-600 text-emerald-700 cursor-pointer"
+        >
+          รายการน้ำยามาตรฐาน
+        </button>
+        <button
+          id="tab-staff-btn"
+          type="button"
+          class="px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 cursor-pointer"
+        >
+          รายชื่อเจ้าหน้าที่ผู้เปิด
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
+        <!-- Solutions Tab -->
+        <div id="tab-solutions-panel" class="space-y-4">
+          <form id="add-solution-form" class="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 space-y-3">
+            <div class="text-sm font-extrabold text-emerald-900">
+              + เพิ่มรายการน้ำยาใหม่
+            </div>
+
+            <input
+              id="new-solution-name"
+              type="text"
+              required
+              placeholder="ชื่อน้ำยา เช่น 70% Alcohol, Betadine"
+              class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm sm:text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <label for="new-solution-duration" class="text-sm font-bold text-slate-700 shrink-0">
+                อายุหลังเปิด:
+              </label>
+              <input
+                id="new-solution-duration"
+                type="number"
+                min="1"
+                max="1200"
+                value="30"
+                required
+                class="w-20 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm sm:text-base font-extrabold text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+
+              <!-- Unit Selector Popover (วัน / เดือน / ปี) -->
+              <div class="relative flex-1 min-w-[130px]">
+                <button
+                  id="new-solution-unit-trigger"
+                  type="button"
+                  class="w-full rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3.5 py-2 text-sm sm:text-base font-bold text-slate-900 flex items-center justify-between gap-2 transition cursor-pointer"
+                >
+                  <span id="new-solution-unit-label">วัน</span>
+                  <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </button>
+                <input id="new-solution-unit-value" type="hidden" value="days" />
+
+                <div
+                  id="new-solution-unit-menu"
+                  class="unit-dropdown-menu hidden absolute left-0 right-0 sm:left-auto sm:right-0 mt-1.5 w-44 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 py-1.5 z-50"
+                >
+                  <button
+                    type="button"
+                    data-unit-option="days"
+                    class="unit-option-btn w-full px-4 py-2 text-left text-sm font-bold text-slate-900 hover:bg-slate-100 flex items-center gap-2.5 cursor-pointer"
+                  >
+                    <span class="unit-check w-4 text-emerald-700 font-extrabold">&#10003;</span>
+                    <span>วัน</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-unit-option="months"
+                    class="unit-option-btn w-full px-4 py-2 text-left text-sm font-bold text-slate-900 hover:bg-slate-100 flex items-center gap-2.5 cursor-pointer"
+                  >
+                    <span class="unit-check w-4 text-emerald-700 font-extrabold invisible">&#10003;</span>
+                    <span>เดือน</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-unit-option="years"
+                    class="unit-option-btn w-full px-4 py-2 text-left text-sm font-bold text-slate-900 hover:bg-slate-100 flex items-center gap-2.5 cursor-pointer"
+                  >
+                    <span class="unit-check w-4 text-emerald-700 font-extrabold invisible">&#10003;</span>
+                    <span>ปี</span>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm sm:text-base font-extrabold shadow-xs transition cursor-pointer shrink-0"
+              >
+                เพิ่ม
+              </button>
+            </div>
+          </form>
+
+          <div id="solutions-list" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Staff Tab -->
+        <div id="tab-staff-panel" class="hidden space-y-4">
+          <form id="add-staff-form" class="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
+            <input
+              id="new-staff-name"
+              type="text"
+              required
+              placeholder="ชื่อเจ้าหน้าที่ เช่น พว. วิภา, ทนพ. สมชาย"
+              class="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm sm:text-base font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <button
+              type="submit"
+              class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm sm:text-base font-extrabold transition cursor-pointer shrink-0"
+            >
+              + เพิ่มชื่อ
+            </button>
+          </form>
+
+          <div id="staff-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <div class="px-5 sm:px-6 py-4 bg-white border-t border-slate-100 space-y-3">
+        <div class="flex items-center justify-between gap-2 text-xs">
+          <span class="text-slate-400 font-medium">บันทึกอัตโนมัติในเบราว์เซอร์เครื่องนี้</span>
+          <button
+            id="restore-defaults-btn"
+            type="button"
+            class="px-2.5 py-1 rounded-lg font-bold text-red-600 hover:bg-red-50 cursor-pointer"
+          >
+            คืนค่าเริ่มต้น
+          </button>
+        </div>
+        <button
+          id="done-manage-btn"
+          type="button"
+          class="w-full py-3.5 px-5 rounded-2xl text-sm sm:text-base font-extrabold bg-slate-900 hover:bg-slate-800 text-white transition cursor-pointer"
+        >
+          เสร็จสิ้น
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Usage & iPad / PeriPage Guide -->
+  <div id="guide-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-900/45 backdrop-blur-[2px] p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+          วิธีใช้งาน &amp; การพิมพ์กับ PeriPage (iPad / มือถือ / คอม)
+        </h3>
+        <button
+          id="close-guide-btn"
+          type="button"
+          class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center cursor-pointer"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4 text-sm text-slate-700 leading-relaxed">
+        <div class="space-y-1">
+          <div class="font-extrabold text-slate-900">1. การใช้งานแบบไม่ต้องลงโปรแกรมซับซ้อน</div>
+          <p>เปิดไฟล์นี้ผ่านเบราว์เซอร์ (Safari บน iPad/iPhone หรือ Chrome/Edge บนคอมพิวเตอร์) รายการน้ำยาและชื่อเจ้าหน้าที่จะถูกบันทึกไว้ในเครื่องอัตโนมัติ</p>
+        </div>
+
+        <div class="space-y-1">
+          <div class="font-extrabold text-slate-900">2. การพิมพ์สติ๊กเกอร์ด้วย PeriPage</div>
+          <ol class="list-decimal list-inside space-y-1 text-slate-600">
+            <li>กดปุ่ม <strong>"บันทึกรูป PNG (PeriPage)"</strong> เพื่อดาวน์โหลดไฟล์รูปสติ๊กเกอร์</li>
+            <li>เปิดแอป <strong>PeriPage</strong> บน iPad หรือมือถือ และเชื่อมต่อเครื่องพิมพ์บลูทูธ</li>
+            <li>เลือกรูปภาพที่บันทึกไว้ ปรับขนาดให้พอดีสติ๊กเกอร์ แล้วกดพิมพ์ได้เลย</li>
+          </ol>
+        </div>
+
+        <div class="space-y-1">
+          <div class="font-extrabold text-slate-900">3. ปักหมุดไว้หน้าจอโฮม iPad</div>
+          <p class="text-slate-600">บน Safari กดปุ่ม <strong>แชร์ (Share)</strong> &rarr; <strong>เพิ่มไปยังหน้าจอโฮม (Add to Home Screen)</strong> เพื่อให้กดเปิดใช้งานได้เหมือนแอปทั่วไป</p>
+        </div>
+      </div>
+
+      <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-end">
+        <button
+          id="ok-guide-btn"
+          type="button"
+          class="px-5 py-2 rounded-xl text-sm font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+        >
+          เข้าใจแล้ว
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: iPad / iOS PNG Save & Share Overlay -->
+  <div id="ipad-save-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-[2px] p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-2">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+            รูปสติ๊กเกอร์พร้อมบันทึก (iPad / iOS)
+          </h3>
+          <p class="text-xs font-medium text-slate-500 mt-0.5">
+            แตะค้างที่รูปแล้วเลือก <strong>"บันทึกรูปภาพ" (Save Image)</strong> หรือกดแชร์/เปิดรูป
+          </p>
+        </div>
+        <button
+          id="close-ipad-save-btn"
+          type="button"
+          aria-label="ปิดหน้าต่างบันทึกรูป"
+          class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center cursor-pointer shrink-0"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 flex flex-col items-center">
+        <div class="w-full bg-slate-100 rounded-2xl p-3 border border-slate-200 flex items-center justify-center">
+          <img
+            id="ipad-png-preview-img"
+            alt="ตัวอย่างรูปสติ๊กเกอร์ PNG สำหรับ PeriPage"
+            class="w-full max-w-[360px] h-auto rounded-xl shadow-xs bg-white select-all"
+          />
+        </div>
+
+        <div class="w-full bg-amber-50/90 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 font-medium leading-relaxed">
+          <strong>วิธีบันทึกลง iPad:</strong> แตะค้างที่รูปด้านบนแล้วเลือก <em>บันทึกรูปภาพ</em> หรือกดปุ่ม <em>แชร์รูปภาพ</em> เพื่อส่งเข้า Photos / แอป PeriPage ได้ทันที
+        </div>
+      </div>
+
+      <div class="px-5 py-4 bg-slate-50 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <button
+          id="ipad-share-png-btn"
+          type="button"
+          class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer"
+        >
+          <span>แชร์รูปภาพ</span>
+        </button>
+        <button
+          id="ipad-open-tab-btn"
+          type="button"
+          class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer"
+        >
+          <span>เปิดรูปเต็มจอ</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Storage Keys & Default Seed Data
+     */
+    const STORAGE_KEYS = {
+      SOLUTIONS: 'peripage_expiry_solutions_v2',
+      STAFF: 'peripage_expiry_staff_v2',
+      FORMAT: 'peripage_expiry_format_v2',
+    };
+
+    const DEFAULT_SOLUTIONS = [
+      { id: 'sol-1', name: '70% Alcohol', duration: 30, unit: 'days', locked: true },
+      { id: 'sol-2', name: 'Normal Saline (NSS)', duration: 7, unit: 'days', locked: true },
+      { id: 'sol-3', name: 'Hydrogen Peroxide', duration: 14, unit: 'days', locked: true },
+      { id: 'sol-4', name: 'Betadine Solution', duration: 30, unit: 'days', locked: true },
+    ];
+
+    const DEFAULT_STAFF = [
+      { id: 'stf-1', name: 'พว. วิภา' },
+      { id: 'stf-2', name: 'ทนพ. สมชาย' },
+      { id: 'stf-3', name: 'พิมพ์ชนก' },
+    ];
+
+    const UNIT_LABELS_TH = {
+      days: 'วัน',
+      months: 'เดือน',
+      years: 'ปี',
+    };
+
+    /**
+     * Day-of-week color palette:
+     * 0 = Sunday (Red), 1 = Monday (Yellow), 2 = Tuesday (Pink),
+     * 3 = Wednesday (Green), 4 = Thursday (Orange), 5 = Friday (Blue), 6 = Saturday (Purple)
+     */
+    const WEEKDAY_STYLES = {
+      0: {
+        name: 'วันอาทิตย์',
+        bannerBg: '#dc2626',
+        bannerText: '#ffffff',
+        expiryText: '#dc2626',
+        badgeBg: '#dc2626',
+        badgeText: '#ffffff',
+        stripBg: '#fef2f2',
+        stripBorder: '#fecaca',
+        dotColor: '#dc2626',
+      },
+      1: {
+        name: 'วันจันทร์',
+        bannerBg: '#eab308',
+        bannerText: '#111827',
+        expiryText: '#111827',
+        badgeBg: '#facc15',
+        badgeText: '#111827',
+        stripBg: '#fefce8',
+        stripBorder: '#fde047',
+        dotColor: '#facc15',
+      },
+      2: {
+        name: 'วันอังคาร',
+        bannerBg: '#ec4899',
+        bannerText: '#ffffff',
+        expiryText: '#db2777',
+        badgeBg: '#ec4899',
+        badgeText: '#ffffff',
+        stripBg: '#fdf2f8',
+        stripBorder: '#fbcfe8',
+        dotColor: '#ec4899',
+      },
+      3: {
+        name: 'วันพุธ',
+        bannerBg: '#16a34a',
+        bannerText: '#ffffff',
+        expiryText: '#15803d',
+        badgeBg: '#16a34a',
+        badgeText: '#ffffff',
+        stripBg: '#f0fdf4',
+        stripBorder: '#bbf7d0',
+        dotColor: '#16a34a',
+      },
+      4: {
+        name: 'วันพฤหัสบดี',
+        bannerBg: '#f97316',
+        bannerText: '#ffffff',
+        expiryText: '#ea580c',
+        badgeBg: '#f97316',
+        badgeText: '#ffffff',
+        stripBg: '#fff7ed',
+        stripBorder: '#fed7aa',
+        dotColor: '#f97316',
+      },
+      5: {
+        name: 'วันศุกร์',
+        bannerBg: '#2563eb',
+        bannerText: '#ffffff',
+        expiryText: '#1d4ed8',
+        badgeBg: '#2563eb',
+        badgeText: '#ffffff',
+        stripBg: '#eff6ff',
+        stripBorder: '#bfdbfe',
+        dotColor: '#2563eb',
+      },
+      6: {
+        name: 'วันเสาร์',
+        bannerBg: '#9333ea',
+        bannerText: '#ffffff',
+        expiryText: '#7e22ce',
+        badgeBg: '#9333ea',
+        badgeText: '#ffffff',
+        stripBg: '#faf5ff',
+        stripBorder: '#e9d5ff',
+        dotColor: '#9333ea',
+      },
+    };
+
+    const THAI_MONTHS_SHORT = [
+      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.',
+    ];
+
+    const THAI_MONTHS_FULL = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
+    ];
+
+    let solutions = [];
+    let staffList = [];
+    let latestPngDataUrl = '';
+    let latestPngFileName = 'peripage-sticker.png';
+
+    function isIpadOrIosDevice() {
+      const ua = navigator.userAgent || '';
+      const isIosUa = /iPad|iPhone|iPod/i.test(ua);
+      const isIpadOsDesktopUa = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      return isIosUa || isIpadOsDesktopUa;
+    }
+
+    function isInsideIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+    }
+
+    function dataUrlToBlob(dataUrl) {
+      const parts = dataUrl.split(',');
+      const mimeMatch = parts[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+      const binary = atob(parts[1]);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: mime });
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const palette =
+        type === 'success'
+          ? 'bg-emerald-800 text-white border-emerald-700'
+          : type === 'warn'
+          ? 'bg-amber-700 text-white border-amber-600'
+          : 'bg-slate-900 text-white border-slate-800';
+
+      toast.className = `px-4 py-2.5 rounded-xl border shadow-lg text-xs sm:text-sm font-bold transition-opacity duration-300 ${palette}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2400);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function loadFromStorage(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return structuredClone(fallback);
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : structuredClone(fallback);
+      } catch (err) {
+        console.warn('Storage read fallback:', err);
+        return structuredClone(fallback);
+      }
+    }
+
+    function saveToStorage(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (err) {
+        console.warn('Storage write skipped:', err);
+      }
+    }
+
+    function normalizeSolutions(items) {
+      return items.map((item, idx) => {
+        const unit = ['days', 'months', 'years'].includes(item.unit) ? item.unit : 'days';
+        const duration = Math.max(1, parseInt(item.duration ?? item.days ?? 30, 10) || 1);
+        return {
+          id: item.id || `sol-${Date.now()}-${idx}`,
+          name: String(item.name || 'น้ำยา').trim(),
+          duration,
+          unit,
+          locked: item.locked !== undefined ? Boolean(item.locked) : true,
+        };
+      });
+    }
+
+    function parseInputDate(dateStr) {
+      if (!dateStr) {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      }
+      const parts = dateStr.split('-').map(Number);
+      if (parts.length === 3 && !parts.some(isNaN)) {
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+      const fallback = new Date(dateStr);
+      return isNaN(fallback.getTime()) ? new Date() : fallback;
+    }
+
+    function formatInputDate(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDuration(dateObj, amount, unit = 'days') {
+      const val = Math.max(1, Number(amount) || 1);
+      const y = dateObj.getFullYear();
+      const m = dateObj.getMonth();
+      const d = dateObj.getDate();
+
+      if (unit === 'months') {
+        const totalMonths = m + val;
+        const targetYear = y + Math.floor(totalMonths / 12);
+        const targetMonth = ((totalMonths % 12) + 12) % 12;
+        const maxDay = new Date(targetYear, targetMonth + 1, 0).getDate();
+        return new Date(targetYear, targetMonth, Math.min(d, maxDay));
+      }
+
+      if (unit === 'years') {
+        const targetYear = y + val;
+        const maxDay = new Date(targetYear, m + 1, 0).getDate();
+        return new Date(targetYear, m, Math.min(d, maxDay));
+      }
+
+      const next = new Date(y, m, d);
+      next.setDate(next.getDate() + val);
+      return next;
+    }
+
+    function formatThaiShortDate(dateObj) {
+      const day = dateObj.getDate();
+      const monthShort = THAI_MONTHS_SHORT[dateObj.getMonth()];
+      const buddhistShortYear = String((dateObj.getFullYear() + 543) % 100).padStart(2, '0');
+      return `${day} ${monthShort} ${buddhistShortYear}`;
+    }
+
+    function formatThaiFullDate(dateObj) {
+      const day = dateObj.getDate();
+      const monthFull = THAI_MONTHS_FULL[dateObj.getMonth()];
+      const buddhistYear = dateObj.getFullYear() + 543;
+      return `${day} ${monthFull} ${buddhistYear}`;
+    }
+
+    function renderQuickPills() {
+      const pillsContainer = document.getElementById('standard-reagent-pills');
+      const selectedSolId = pillsContainer.dataset.selectedId || '';
+      const hasCustomName = document.getElementById('solution-custom-input').value.trim().length > 0;
+      pillsContainer.innerHTML = '';
+
+      solutions.forEach((sol) => {
+        const isSelected = !hasCustomName && sol.id === selectedSolId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.reagentPillId = sol.id;
+        btn.setAttribute('aria-pressed', String(isSelected));
+        btn.className = isSelected
+          ? 'touch-pill px-3.5 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 text-white border border-emerald-600 shadow-2xs inline-flex items-center gap-1.5 transition cursor-pointer'
+          : 'touch-pill px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 border border-slate-200 inline-flex items-center gap-1.5 transition cursor-pointer';
+
+        const lockIcon = sol.locked ? '<span class="opacity-80 pointer-events-none">&#128274;</span>' : '';
+        btn.innerHTML = `<span class="pointer-events-none">${escapeHtml(sol.name)}</span>${lockIcon}`;
+        pillsContainer.appendChild(btn);
+      });
+
+      const staffContainer = document.getElementById('staff-pills');
+      const selectedStaffId = staffContainer.dataset.selectedId || '';
+      const hasCustomStaff = document.getElementById('staff-custom-input').value.trim().length > 0;
+      staffContainer.innerHTML = '';
+
+      staffList.forEach((stf) => {
+        const isSelected = !hasCustomStaff && stf.id === selectedStaffId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.staffPillId = stf.id;
+        btn.setAttribute('aria-pressed', String(isSelected));
+        btn.className = isSelected
+          ? 'touch-pill px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-800 text-white border border-slate-800 transition cursor-pointer'
+          : 'touch-pill px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-200 transition cursor-pointer';
+        btn.innerHTML = `<span class="pointer-events-none">${escapeHtml(stf.name)}</span>`;
+        staffContainer.appendChild(btn);
+      });
+    }
+
+    function selectReagentPill(pillId) {
+      const sol = solutions.find((s) => s.id === pillId);
+      if (!sol) return;
+
+      const pillsContainer = document.getElementById('standard-reagent-pills');
+      const customInput = document.getElementById('solution-custom-input');
+      const hasCustomName = customInput.value.trim().length > 0;
+      const alreadySelected = !hasCustomName && pillsContainer.dataset.selectedId === sol.id;
+
+      if (alreadySelected) {
+        pillsContainer.dataset.selectedId = '';
+        customInput.value = '';
+        renderQuickPills();
+        updatePreview();
+        return;
+      }
+
+      pillsContainer.dataset.selectedId = sol.id;
+      customInput.value = '';
+      document.getElementById('duration-value-input').value = sol.duration;
+      document.getElementById('duration-unit-select').value = sol.unit;
+
+      renderQuickPills();
+      updatePreview();
+    }
+
+    function selectStaffPill(pillId) {
+      const stf = staffList.find((s) => s.id === pillId);
+      if (!stf) return;
+
+      const staffContainer = document.getElementById('staff-pills');
+      const customInput = document.getElementById('staff-custom-input');
+      const hasCustomStaff = customInput.value.trim().length > 0;
+      const alreadySelected = !hasCustomStaff && staffContainer.dataset.selectedId === stf.id;
+
+      if (alreadySelected) {
+        staffContainer.dataset.selectedId = '';
+        customInput.value = '';
+        renderQuickPills();
+        updatePreview();
+        return;
+      }
+
+      staffContainer.dataset.selectedId = stf.id;
+      customInput.value = '';
+      renderQuickPills();
+      updatePreview();
+    }
+
+    function bindPillTouchAndClick(containerId, attrName, handler) {
+      const container = document.getElementById(containerId);
+      let handledByTouch = false;
+
+      container.addEventListener(
+        'touchend',
+        (e) => {
+          const pill = e.target.closest(`[${attrName}]`);
+          if (!pill) return;
+          if (e.cancelable) e.preventDefault();
+          handledByTouch = true;
+          handler(pill.getAttribute(attrName));
+          setTimeout(() => {
+            handledByTouch = false;
+          }, 350);
+        },
+        { passive: false }
+      );
+
+      container.addEventListener('click', (e) => {
+        if (handledByTouch) return;
+        const pill = e.target.closest(`[${attrName}]`);
+        if (!pill) return;
+        handler(pill.getAttribute(attrName));
+      });
+    }
+
+    function getCurrentCalculationData() {
+      const pillsContainer = document.getElementById('standard-reagent-pills');
+      const customSolInput = document.getElementById('solution-custom-input').value.trim();
+      const selectedSolObj = solutions.find((s) => s.id === pillsContainer.dataset.selectedId);
+      const solutionName = customSolInput || (selectedSolObj ? selectedSolObj.name : 'Betadine Solution');
+
+      const openDate = parseInputDate(document.getElementById('open-date-input').value);
+      let durationVal = parseInt(document.getElementById('duration-value-input').value, 10);
+      if (isNaN(durationVal) || durationVal < 1) durationVal = 1;
+      const durationUnit = document.getElementById('duration-unit-select').value || 'days';
+
+      const expiryDate = addDuration(openDate, durationVal, durationUnit);
+      const weekdayIndex = expiryDate.getDay();
+      const dayStyle = WEEKDAY_STYLES[weekdayIndex] || WEEKDAY_STYLES[1];
+
+      const customStaffInput = document.getElementById('staff-custom-input').value.trim();
+      const staffContainer = document.getElementById('staff-pills');
+      const selectedStaffObj = staffList.find((s) => s.id === staffContainer.dataset.selectedId);
+      const staffName = customStaffInput || (selectedStaffObj ? selectedStaffObj.name : '');
+
+      return {
+        solutionName,
+        openDate,
+        durationVal,
+        durationUnit,
+        expiryDate,
+        weekdayIndex,
+        dayStyle,
+        staffName,
+        isLockedStandard: !customSolInput && Boolean(selectedSolObj && selectedSolObj.locked),
+      };
+    }
+
+    function updatePreview() {
+      const data = getCurrentCalculationData();
+      const {
+        solutionName,
+        openDate,
+        durationVal,
+        durationUnit,
+        expiryDate,
+        weekdayIndex,
+        dayStyle,
+        staffName,
+        isLockedStandard,
+      } = data;
+
+      document.getElementById('thai-open-date-preview').textContent = formatThaiFullDate(openDate);
+      document.getElementById('locked-duration-badge').classList.toggle('hidden', !isLockedStandard);
+
+      document.querySelectorAll('.duration-preset-btn').forEach((btn) => {
+        const [pVal, pUnit] = (btn.dataset.durationPreset || '').split('|');
+        const matches = parseInt(pVal, 10) === durationVal && pUnit === durationUnit;
+        const spanCol = btn.dataset.durationPreset === '30|months' ? 'col-span-2 ' : '';
+        btn.className = matches
+          ? `duration-preset-btn ${spanCol}py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-600 text-white border border-emerald-600 transition cursor-pointer`
+          : `duration-preset-btn ${spanCol}py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition cursor-pointer`;
+      });
+
+      const summaryStrip = document.getElementById('calc-summary-strip');
+      summaryStrip.style.backgroundColor = dayStyle.stripBg;
+      summaryStrip.style.borderColor = dayStyle.stripBorder;
+
+      document.getElementById('summary-color-dot').style.backgroundColor = dayStyle.dotColor;
+      document.getElementById('summary-expiry-full').textContent =
+        `${formatThaiFullDate(expiryDate)} (อายุ ${durationVal} ${UNIT_LABELS_TH[durationUnit] || 'วัน'})`;
+
+      const badge = document.getElementById('summary-day-badge');
+      badge.textContent = dayStyle.name;
+      badge.style.backgroundColor = dayStyle.badgeBg;
+      badge.style.color = dayStyle.badgeText;
+
+      // Update sticker card elements
+      const banner = document.getElementById('sticker-banner');
+      banner.style.backgroundColor = dayStyle.bannerBg;
+      banner.style.color = dayStyle.bannerText;
+
+      document.getElementById('sticker-weekday').textContent = dayStyle.name;
+      document.getElementById('sticker-solution-name').textContent = solutionName;
+
+      const staffBadge = document.getElementById('sticker-staff-badge');
+      if (staffName) {
+        staffBadge.classList.remove('hidden');
+        staffBadge.textContent = `ผู้เปิด: ${staffName}`;
+      } else {
+        staffBadge.classList.add('hidden');
+      }
+
+      document.getElementById('sticker-open-date').textContent = formatThaiShortDate(openDate);
+
+      const expDateEl = document.getElementById('sticker-expiry-date');
+      expDateEl.textContent = formatThaiShortDate(expiryDate);
+      expDateEl.style.color = weekdayIndex === 1 ? '#111827' : dayStyle.expiryText;
+    }
+
+    function renderManageLists() {
+      const solListEl = document.getElementById('solutions-list');
+      solListEl.innerHTML = '';
+
+      if (solutions.length === 0) {
+        solListEl.innerHTML = '<div class="p-4 text-center text-sm text-slate-500 rounded-2xl border border-slate-200">ยังไม่มีรายการน้ำยามาตรฐาน</div>';
+      } else {
+        solutions.forEach((sol) => {
+          const row = document.createElement('div');
+          row.className = 'px-4 py-3 bg-white rounded-2xl border border-slate-200/90 flex items-center justify-between gap-3';
+          row.innerHTML = `
+            <div class="min-w-0">
+              <div class="font-extrabold text-sm sm:text-base text-slate-900 truncate">${escapeHtml(sol.name)}</div>
+              <div class="text-xs font-semibold text-slate-500 flex items-center gap-1 mt-0.5">
+                <span>${sol.locked ? '&#128274;' : ''}</span>
+                <span>อายุหลังเปิด: ${sol.duration} ${escapeHtml(UNIT_LABELS_TH[sol.unit] || 'วัน')}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              data-del-sol="${sol.id}"
+              class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer shrink-0"
+            >
+              ลบ
+            </button>
+          `;
+          solListEl.appendChild(row);
+        });
+      }
+
+      const staffListEl = document.getElementById('staff-list');
+      staffListEl.innerHTML = '';
+
+      if (staffList.length === 0) {
+        staffListEl.innerHTML = '<div class="p-4 text-center text-sm text-slate-500 rounded-2xl border border-slate-200">ยังไม่มีรายชื่อเจ้าหน้าที่</div>';
+      } else {
+        staffList.forEach((stf) => {
+          const row = document.createElement('div');
+          row.className = 'px-4 py-2.5 bg-white rounded-2xl border border-slate-200/90 flex items-center justify-between gap-3';
+          row.innerHTML = `
+            <div class="font-bold text-sm sm:text-base text-slate-900 truncate">${escapeHtml(stf.name)}</div>
+            <button
+              type="button"
+              data-del-staff="${stf.id}"
+              class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer shrink-0"
+            >
+              ลบ
+            </button>
+          `;
+          staffListEl.appendChild(row);
+        });
+      }
+    }
+
+    function setNewSolutionUnit(unitKey) {
+      const validUnit = ['days', 'months', 'years'].includes(unitKey) ? unitKey : 'days';
+      document.getElementById('new-solution-unit-value').value = validUnit;
+      document.getElementById('new-solution-unit-label').textContent = UNIT_LABELS_TH[validUnit];
+
+      document.querySelectorAll('#new-solution-unit-menu .unit-option-btn').forEach((btn) => {
+        const check = btn.querySelector('.unit-check');
+        if (btn.dataset.unitOption === validUnit) {
+          check.classList.remove('invisible');
+          btn.classList.add('bg-slate-50');
+        } else {
+          check.classList.add('invisible');
+          btn.classList.remove('bg-slate-50');
+        }
+      });
+    }
+
+    function openModal(modalId) {
+      const el = document.getElementById(modalId);
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+
+    function switchManageTab(tab) {
+      const solBtn = document.getElementById('tab-solutions-btn');
+      const stfBtn = document.getElementById('tab-staff-btn');
+      const solPanel = document.getElementById('tab-solutions-panel');
+      const stfPanel = document.getElementById('tab-staff-panel');
+      const titleEl = document.getElementById('manage-modal-title');
+      const subtitleEl = document.getElementById('manage-modal-subtitle');
+
+      if (tab === 'solutions') {
+        solBtn.className = 'px-3.5 py-2 text-xs sm:text-sm font-extrabold border-b-2 border-emerald-600 text-emerald-700 cursor-pointer';
+        stfBtn.className = 'px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 cursor-pointer';
+        solPanel.classList.remove('hidden');
+        stfPanel.classList.add('hidden');
+        titleEl.textContent = 'จัดการรายการน้ำยามาตรฐาน';
+        subtitleEl.textContent = 'เพิ่มน้ำยาพร้อมกำหนดอายุ (วัน / เดือน / ปี) เพื่อล็อคการคำนวณอัตโนมัติ';
+      } else {
+        stfBtn.className = 'px-3.5 py-2 text-xs sm:text-sm font-extrabold border-b-2 border-emerald-600 text-emerald-700 cursor-pointer';
+        solBtn.className = 'px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 cursor-pointer';
+        stfPanel.classList.remove('hidden');
+        solPanel.classList.add('hidden');
+        titleEl.textContent = 'จัดการรายชื่อเจ้าหน้าที่ผู้เปิด';
+        subtitleEl.textContent = 'เพิ่มหรือลบรายชื่อเจ้าหน้าที่สำหรับเลือกใช้งานรวดเร็ว';
+      }
+    }
+
+    /**
+     * Render a high-resolution PNG sticker tailored for PeriPage thermal label printing
+     */
+    function roundRectPath(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function fitTextSingleLine(ctx, text, maxWidth, startSize, minSize, fontWeight = '800') {
+      let size = startSize;
+      while (size > minSize) {
+        ctx.font = `${fontWeight} ${size}px "Noto Sans Thai", "Inter", sans-serif`;
+        if (ctx.measureText(text).width <= maxWidth) return size;
+        size -= 2;
+      }
+      ctx.font = `${fontWeight} ${minSize}px "Noto Sans Thai", "Inter", sans-serif`;
+      return minSize;
+    }
+
+    function handleDownloadPng() {
+      try {
+        const data = getCurrentCalculationData();
+        const formatVal = document.getElementById('sticker-format-select').value || '50x30';
+        const dims =
+          formatVal === '40x30'
+            ? { width: 720, height: 540 }
+            : formatVal === '57x30'
+            ? { width: 920, height: 520 }
+            : { width: 800, height: 520 };
+
+        const canvas = document.createElement('canvas');
+        canvas.width = dims.width;
+        canvas.height = dims.height;
+        const ctx = canvas.getContext('2d');
+
+        // Pure white sticker background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const pad = 24;
+        const outerX = pad;
+        const outerY = pad;
+        const outerW = canvas.width - pad * 2;
+        const outerH = canvas.height - pad * 2;
+
+        // Outer border
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 4;
+        roundRectPath(ctx, outerX, outerY, outerW, outerH, 32);
+        ctx.stroke();
+
+        const innerPad = 24;
+        const contentX = outerX + innerPad;
+        const contentW = outerW - innerPad * 2;
+
+        // 1. Colored header banner
+        const bannerY = outerY + innerPad;
+        const bannerH = 88;
+        ctx.fillStyle = data.dayStyle.bannerBg;
+        roundRectPath(ctx, contentX, bannerY, contentW, bannerH, 22);
+        ctx.fill();
+
+        ctx.fillStyle = data.dayStyle.bannerText;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        ctx.font = '800 34px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText('⚠ วันหมดอายุ', contentX + 24, bannerY + bannerH / 2 + 1);
+
+        ctx.textAlign = 'right';
+        ctx.font = '800 34px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText(data.dayStyle.name, contentX + contentW - 24, bannerY + bannerH / 2 + 1);
+
+        // 2. Solution Name (left) + small staff tag on same row (right)
+        const nameRowY = bannerY + bannerH + 22;
+        const nameRowH = 54;
+        let staffLabelText = '';
+        let staffBadgeW = 0;
+
+        if (data.staffName) {
+          staffLabelText = `ผู้เปิด: ${data.staffName}`;
+          ctx.font = '700 22px "Noto Sans Thai", "Inter", sans-serif';
+          const rawW = ctx.measureText(staffLabelText).width + 24;
+          staffBadgeW = Math.min(rawW, contentW * 0.42);
+        }
+
+        const solMaxW = staffBadgeW > 0 ? contentW - staffBadgeW - 14 : contentW;
+        fitTextSingleLine(ctx, data.solutionName, solMaxW, 38, 22, '800');
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        let displaySol = data.solutionName;
+        while (ctx.measureText(displaySol).width > solMaxW && displaySol.length > 1) {
+          displaySol = displaySol.slice(0, -1);
+        }
+        if (displaySol !== data.solutionName) displaySol += '…';
+        ctx.fillText(displaySol, contentX, nameRowY + nameRowH / 2);
+
+        if (staffBadgeW > 0) {
+          const badgeX = contentX + contentW - staffBadgeW;
+          const badgeY = nameRowY + 8;
+          const badgeH = 38;
+          ctx.fillStyle = '#f1f5f9';
+          roundRectPath(ctx, badgeX, badgeY, staffBadgeW, badgeH, 12);
+          ctx.fill();
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 2;
+          roundRectPath(ctx, badgeX, badgeY, staffBadgeW, badgeH, 12);
+          ctx.stroke();
+
+          ctx.fillStyle = '#334155';
+          ctx.font = '700 21px "Noto Sans Thai", "Inter", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          let displayStaff = staffLabelText;
+          while (ctx.measureText(displayStaff).width > staffBadgeW - 14 && displayStaff.length > 5) {
+            displayStaff = displayStaff.slice(0, -1);
+          }
+          if (displayStaff !== staffLabelText) displayStaff += '…';
+          ctx.fillText(displayStaff, badgeX + staffBadgeW / 2, badgeY + badgeH / 2 + 1);
+        }
+
+        // 3. Open & Expiry dates inner box
+        const datesBoxY = nameRowY + nameRowH + 14;
+        const datesBoxH = outerY + outerH - innerPad - datesBoxY;
+
+        ctx.fillStyle = '#f8fafc';
+        roundRectPath(ctx, contentX, datesBoxY, contentW, datesBoxH, 22);
+        ctx.fill();
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 3;
+        roundRectPath(ctx, contentX, datesBoxY, contentW, datesBoxH, 22);
+        ctx.stroke();
+
+        const halfH = datesBoxH / 2;
+
+        // Divider between เปิด and หมดอายุ
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(contentX + 20, datesBoxY + halfH);
+        ctx.lineTo(contentX + contentW - 20, datesBoxY + halfH);
+        ctx.stroke();
+
+        // Row: เปิด:
+        const openCenterY = datesBoxY + halfH / 2;
+        ctx.fillStyle = '#1e293b';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.font = '800 30px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText('เปิด:', contentX + 24, openCenterY);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'right';
+        ctx.font = '800 44px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText(formatThaiShortDate(data.openDate), contentX + contentW - 24, openCenterY);
+
+        // Row: หมดอายุ:
+        const expCenterY = datesBoxY + halfH + halfH / 2;
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'left';
+        ctx.font = '800 30px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText('หมดอายุ:', contentX + 24, expCenterY);
+
+        ctx.fillStyle = data.weekdayIndex === 1 ? '#111827' : data.dayStyle.expiryText;
+        ctx.textAlign = 'right';
+        ctx.font = '800 50px "Noto Sans Thai", "Inter", sans-serif';
+        ctx.fillText(formatThaiShortDate(data.expiryDate), contentX + contentW - 24, expCenterY);
+
+        const dataUrl = canvas.toDataURL('image/png');
+        const safeSlug = data.solutionName.replace(/[^a-zA-Z0-9ก-๙_-]+/g, '_').slice(0, 30) || 'sticker';
+        const fileName = `peripage-expiry-${safeSlug}-${formatInputDate(data.expiryDate)}.png`;
+        latestPngDataUrl = dataUrl;
+        latestPngFileName = fileName;
+
+        const ipadOrIos = isIpadOrIosDevice();
+        const inIframe = isInsideIframe();
+
+        if (!ipadOrIos && !inIframe) {
+          const link = document.createElement('a');
+          link.download = fileName;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          showToast('บันทึกรูปสติ๊กเกอร์ PNG พร้อมส่งเข้า PeriPage แล้ว', 'success');
+          return;
+        }
+
+        // On iPad/iOS or sandboxed preview frames, also try anchor download and open the save modal
+        try {
+          const link = document.createElement('a');
+          link.download = fileName;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        } catch (_) {
+          // Fallback modal handles saving cleanly
+        }
+
+        document.getElementById('ipad-png-preview-img').src = dataUrl;
+        openModal('ipad-save-modal');
+        showToast('เปิดหน้าบันทึกรูปสติ๊กเกอร์สำหรับ iPad / iOS แล้ว', 'success');
+      } catch (err) {
+        console.error('PNG export error:', err);
+        showToast('ไม่สามารถสร้างรูป PNG ได้ในขณะนี้', 'warn');
+      }
+    }
+
+    async function handleIpadSharePng() {
+      if (!latestPngDataUrl) return;
+      try {
+        const blob = dataUrlToBlob(latestPngDataUrl);
+        const file = new File([blob], latestPngFileName, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+          await navigator.share({
+            files: [file],
+            title: 'สติ๊กเกอร์วันหมดอายุน้ำยา (PeriPage)',
+          });
+          showToast('แชร์รูปสติ๊กเกอร์เรียบร้อยแล้ว', 'success');
+          return;
+        }
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+      }
+
+      handleIpadOpenTab();
+    }
+
+    function handleIpadOpenTab() {
+      if (!latestPngDataUrl) return;
+      try {
+        const blob = dataUrlToBlob(latestPngDataUrl);
+        const blobUrl = URL.createObjectURL(blob);
+        const win = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+        if (!win) {
+          window.location.href = latestPngDataUrl;
+        }
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      } catch (err) {
+        window.open(latestPngDataUrl, '_blank');
+      }
+    }
+
+    function bindEvents() {
+      bindPillTouchAndClick('standard-reagent-pills', 'data-reagent-pill-id', selectReagentPill);
+      bindPillTouchAndClick('staff-pills', 'data-staff-pill-id', selectStaffPill);
+
+      document.getElementById('solution-custom-input').addEventListener('input', () => {
+        renderQuickPills();
+        updatePreview();
+      });
+
+      document.getElementById('staff-pills').addEventListener('click', (e) => {
+        const pill = e.target.closest('[data-staff-pillId]');
+        if (!pill) return;
+        const stf = staffList.find((s) => s.id === pill.dataset.staffPillId);
+        if (!stf) return;
+
+        document.getElementById('staff-pills').dataset.selectedId = stf.id;
+        document.getElementById('staff-custom-input').value = '';
+        renderQuickPills();
+        updatePreview();
+      });
+
+      document.getElementById('staff-custom-input').addEventListener('input', () => {
+        renderQuickPills();
+        updatePreview();
+      });
+
+      document.getElementById('open-date-input').addEventListener('change', () => {
+        updatePreview();
+      });
+
+      document.getElementById('use-today-btn').addEventListener('click', () => {
+        const now = new Date();
+        document.getElementById('open-date-input').value = formatInputDate(
+          new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        );
+        updatePreview();
+        showToast('ตั้งเป็นวันเปิดใช้วันนี้แล้ว');
+      });
+
+      document.querySelectorAll('.duration-preset-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const [val, unit] = (btn.dataset.durationPreset || '30|days').split('|');
+          document.getElementById('duration-value-input').value = val;
+          document.getElementById('duration-unit-select').value = unit;
+          updatePreview();
+        });
+      });
+
+      document.getElementById('duration-value-input').addEventListener('input', () => {
+        updatePreview();
+      });
+
+      document.getElementById('duration-unit-select').addEventListener('change', () => {
+        updatePreview();
+      });
+
+      document.getElementById('reset-form-btn').addEventListener('click', () => {
+        const now = new Date();
+        document.getElementById('open-date-input').value = formatInputDate(now);
+        document.getElementById('solution-custom-input').value = '';
+        document.getElementById('staff-custom-input').value = '';
+        if (solutions.length > 0) {
+          document.getElementById('standard-reagent-pills').dataset.selectedId = solutions[0].id;
+          document.getElementById('duration-value-input').value = solutions[0].duration;
+          document.getElementById('duration-unit-select').value = solutions[0].unit;
+        }
+        if (staffList.length > 0) {
+          document.getElementById('staff-pills').dataset.selectedId = staffList[0].id;
+        }
+        renderQuickPills();
+        updatePreview();
+        showToast('รีเซ็ตค่าเรียบร้อยแล้ว');
+      });
+
+      const formatSelect = document.getElementById('sticker-format-select');
+      const savedFormat = localStorage.getItem(STORAGE_KEYS.FORMAT);
+      if (savedFormat) formatSelect.value = savedFormat;
+      formatSelect.addEventListener('change', () => {
+        localStorage.setItem(STORAGE_KEYS.FORMAT, formatSelect.value);
+        updatePreview();
+      });
+
+      document.getElementById('download-png-btn').addEventListener('click', handleDownloadPng);
+      document.getElementById('print-sticker-btn').addEventListener('click', () => {
+        window.print();
+      });
+
+      document.getElementById('open-standard-reagents-btn').addEventListener('click', () => {
+        renderManageLists();
+        setNewSolutionUnit('days');
+        switchManageTab('solutions');
+        openModal('manage-modal');
+      });
+
+      document.getElementById('quick-manage-staff-btn').addEventListener('click', () => {
+        renderManageLists();
+        switchManageTab('staff');
+        openModal('manage-modal');
+        setTimeout(() => document.getElementById('new-staff-name').focus(), 80);
+      });
+
+      const unitTrigger = document.getElementById('new-solution-unit-trigger');
+      const unitMenu = document.getElementById('new-solution-unit-menu');
+      unitTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        unitMenu.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('#new-solution-unit-menu .unit-option-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setNewSolutionUnit(btn.dataset.unitOption);
+          unitMenu.classList.add('hidden');
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!unitMenu.contains(e.target) && !unitTrigger.contains(e.target)) {
+          unitMenu.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('close-manage-btn').addEventListener('click', () => {
+        unitMenu.classList.add('hidden');
+        closeModal('manage-modal');
+      });
+      document.getElementById('done-manage-btn').addEventListener('click', () => {
+        unitMenu.classList.add('hidden');
+        closeModal('manage-modal');
+      });
+      document.getElementById('tab-solutions-btn').addEventListener('click', () => switchManageTab('solutions'));
+      document.getElementById('tab-staff-btn').addEventListener('click', () => switchManageTab('staff'));
+
+      document.getElementById('open-guide-btn').addEventListener('click', () => openModal('guide-modal'));
+      document.getElementById('close-guide-btn').addEventListener('click', () => closeModal('guide-modal'));
+      document.getElementById('ok-guide-btn').addEventListener('click', () => closeModal('guide-modal'));
+
+      document.getElementById('close-ipad-save-btn').addEventListener('click', () => closeModal('ipad-save-modal'));
+      document.getElementById('ipad-share-png-btn').addEventListener('click', handleIpadSharePng);
+      document.getElementById('ipad-open-tab-btn').addEventListener('click', handleIpadOpenTab);
+
+      ['manage-modal', 'guide-modal', 'ipad-save-modal'].forEach((id) => {
+        document.getElementById(id).addEventListener('click', (e) => {
+          if (e.target.id === id) {
+            unitMenu.classList.add('hidden');
+            closeModal(id);
+          }
+        });
+      });
+
+      document.getElementById('add-solution-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('new-solution-name');
+        const durInput = document.getElementById('new-solution-duration');
+        const unitVal = document.getElementById('new-solution-unit-value').value || 'days';
+        const name = nameInput.value.trim();
+        const duration = Math.max(1, parseInt(durInput.value, 10) || 1);
+        if (!name) return;
+
+        const newItem = {
+          id: 'sol-' + Date.now(),
+          name,
+          duration,
+          unit: unitVal,
+          locked: true,
+        };
+        solutions.push(newItem);
+        saveToStorage(STORAGE_KEYS.SOLUTIONS, solutions);
+
+        document.getElementById('standard-reagent-pills').dataset.selectedId = newItem.id;
+        document.getElementById('solution-custom-input').value = '';
+        document.getElementById('duration-value-input').value = newItem.duration;
+        document.getElementById('duration-unit-select').value = newItem.unit;
+
+        renderQuickPills();
+        renderManageLists();
+        updatePreview();
+
+        nameInput.value = '';
+        durInput.value = '30';
+        setNewSolutionUnit('days');
+        showToast(`เพิ่ม "${name}" (${duration} ${UNIT_LABELS_TH[unitVal]}) แล้ว`, 'success');
+      });
+
+      document.getElementById('add-staff-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const staffInput = document.getElementById('new-staff-name');
+        const name = staffInput.value.trim();
+        if (!name) return;
+
+        const newStaff = {
+          id: 'stf-' + Date.now(),
+          name,
+        };
+        staffList.push(newStaff);
+        saveToStorage(STORAGE_KEYS.STAFF, staffList);
+
+        document.getElementById('staff-pills').dataset.selectedId = newStaff.id;
+        document.getElementById('staff-custom-input').value = '';
+
+        renderQuickPills();
+        renderManageLists();
+        updatePreview();
+        staffInput.value = '';
+        showToast(`เพิ่มเจ้าหน้าที่ "${name}" แล้ว`, 'success');
+      });
+
+      document.getElementById('solutions-list').addEventListener('click', (e) => {
+        const delBtn = e.target.closest('[data-del-sol]');
+        if (!delBtn) return;
+
+        const targetId = delBtn.dataset.delSol;
+        solutions = solutions.filter((s) => s.id !== targetId);
+        saveToStorage(STORAGE_KEYS.SOLUTIONS, solutions);
+
+        const pillsEl = document.getElementById('standard-reagent-pills');
+        if (pillsEl.dataset.selectedId === targetId) {
+          pillsEl.dataset.selectedId = solutions[0] ? solutions[0].id : '';
+        }
+
+        renderQuickPills();
+        renderManageLists();
+        updatePreview();
+        showToast('ลบรายการน้ำยามาตรฐานแล้ว');
+      });
+
+      document.getElementById('staff-list').addEventListener('click', (e) => {
+        const delBtn = e.target.closest('[data-del-staff]');
+        if (!delBtn) return;
+
+        const targetId = delBtn.dataset.delStaff;
+        staffList = staffList.filter((s) => s.id !== targetId);
+        saveToStorage(STORAGE_KEYS.STAFF, staffList);
+
+        const staffEl = document.getElementById('staff-pills');
+        if (staffEl.dataset.selectedId === targetId) {
+          staffEl.dataset.selectedId = staffList[0] ? staffList[0].id : '';
+        }
+
+        renderQuickPills();
+        renderManageLists();
+        updatePreview();
+        showToast('ลบรายชื่อเจ้าหน้าที่แล้ว');
+      });
+
+      document.getElementById('restore-defaults-btn').addEventListener('click', () => {
+        solutions = structuredClone(DEFAULT_SOLUTIONS);
+        staffList = structuredClone(DEFAULT_STAFF);
+        saveToStorage(STORAGE_KEYS.SOLUTIONS, solutions);
+        saveToStorage(STORAGE_KEYS.STAFF, staffList);
+
+        document.getElementById('standard-reagent-pills').dataset.selectedId = solutions[0].id;
+        document.getElementById('staff-pills').dataset.selectedId = staffList[0].id;
+        document.getElementById('solution-custom-input').value = '';
+        document.getElementById('staff-custom-input').value = '';
+        document.getElementById('duration-value-input').value = solutions[0].duration;
+        document.getElementById('duration-unit-select').value = solutions[0].unit;
+
+        renderQuickPills();
+        renderManageLists();
+        updatePreview();
+        showToast('คืนค่ารายการเริ่มต้นเรียบร้อยแล้ว', 'success');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      solutions = normalizeSolutions(loadFromStorage(STORAGE_KEYS.SOLUTIONS, DEFAULT_SOLUTIONS));
+      staffList = loadFromStorage(STORAGE_KEYS.STAFF, DEFAULT_STAFF);
+
+      const now = new Date();
+      document.getElementById('open-date-input').value = formatInputDate(now);
+
+      if (solutions.length > 0) {
+        document.getElementById('standard-reagent-pills').dataset.selectedId = solutions[0].id;
+        document.getElementById('duration-value-input').value = solutions[0].duration;
+        document.getElementById('duration-unit-select').value = solutions[0].unit;
+      }
+      if (staffList.length > 0) {
+        document.getElementById('staff-pills').dataset.selectedId = staffList[0].id;
+      }
+
+      renderQuickPills();
+      bindEvents();
+      updatePreview();
+    });
+  </script>
+</body>
+</html>
